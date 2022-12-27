@@ -2,20 +2,29 @@ import 'package:flutter/material.dart';
 import 'sign_up.dart';
 
 class HomePage extends StatefulWidget {
+String email="";
+HomePage();
+HomePage.getEmail(this.email);
+
   @override
   State<StatefulWidget> createState() {
-    return _HomePageState();
+    return _HomePageState(email);
   }
 }
 
 class _HomePageState extends State<HomePage> {
+  String email="";
+_HomePageState(this.email);
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool hidePassword = true;
   Icon passwordVisibility = Icon(Icons.visibility);
   Icon passwordHide = Icon(Icons.visibility_off);
+  
+
   @override
   Widget build(BuildContext context) {
+    emailController.text=email;
     // /passwordVisibility = Icon(Icons.visibility);
     // passwordVisibility;
     //hidePassword;

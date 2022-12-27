@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/screens/home_page.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -17,6 +18,19 @@ class _SignUpPageState extends State<SignUpPage> {
   Icon passwordVisibility = Icon(Icons.visibility);
   Icon passwordHide = Icon(Icons.visibility_off);
   bool _isChecked = false;
+  FocusNode _focusNode = FocusNode();
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +47,7 @@ class _SignUpPageState extends State<SignUpPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TextField(
+                  focusNode: _focusNode,
                   style: TextStyle(color: Colors.white),
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -98,7 +113,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     // maximumSize:  Size.fromHeight(20),
                   ),
                   onPressed: (() async {
-                    checkForNullInstances();
+                    //checkForNullInstances();
                     String email = emailController.text.toString();
                     returnAlertDialogOnEmailError(
                         email, "Please Enter Valid Email");
@@ -106,11 +121,31 @@ class _SignUpPageState extends State<SignUpPage> {
                     if (_validatePassword()) {
                       log("before firebase");
                       try {
-                        await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                                email: email,
-                                password: passwordController.text.toString());
-                        log("User Created");
+                        FutureBuilder<void>(
+                          future: createUser(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else {
+                              return Container();
+                            }
+                          },
+                        );
+                        // await FirebaseAuth.instance
+                        //     .createUserWithEmailAndPassword(
+                        //         email: email,
+                        //         password: passwordController.text.toString());
+                        //        CircularProgressIndicator();
+                        // log("User Created");
+                        // Navigator.of(context)
+                        //     .popUntil((route) => route.isFirst);
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) =>
+                        //           HomePage.getEmail(emailController.text)),
+                        // );
                       } catch (error) {
                         _handleFirebaseThrownExceptions(error);
                       }
@@ -129,6 +164,23 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
+  }
+
+  Future<void> createUser() async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text.toString(),
+          password: passwordController.text.toString());
+      log("User Created");
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomePage.getEmail(emailController.text)),
+      );
+    } catch (error) {
+      _handleFirebaseThrownExceptions(error);
+    }
   }
 
 //created this to check email at first by mistake
@@ -225,25 +277,36 @@ class _SignUpPageState extends State<SignUpPage> {
 
   //handling firebase exceptions adn showing appropriate dialog
   //that is meant to be shown to the users, rest are hidden
+  //this code is tremendenously important
   void _handleFirebaseThrownExceptions(Object error) {
-    if (error is FirebaseAuthException) {
-      switch (error.code) {
-        
-         case 'firebase_auth/email-already-in-use':
-        // Code to handle the error
-        returnAlertDialogOnError('The email address is already in use by another account');
-        break;
+    // log(error.toString());
 
+    if (error is FirebaseAuthException) {
+      // log(error.code);
+      switch (error.code.toString()) {
+        case 'email-already-in-use':
+          // log("Custom: The email is already used");
+          // Code to handle the error
+          returnAlertDialogOnError(
+              'The email address is already in use by another account');
+               FocusScope.of(context).requestFocus(_focusNode);
+          break;
+        case 'invalid-email':
+          returnAlertDialogOnError("Enter a valid email address");
+          break;
+        case 'weak-password':
+          break;
+        default: //log("Default case ran");
       }
     }
   }
 
 //checking if user inputs empty email just for testing. this has no use int he code
   checkForNullInstances() {
-    if (emailController.text.toString() == null) {
-      log("Email is null");
+    if (emailController.text.toString() == '') {
+      //   log("Email is null");
     } else {
-      log("Email is provided");
+      // log("Email is provided");
     }
   }
 }

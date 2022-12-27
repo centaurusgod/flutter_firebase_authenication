@@ -5,7 +5,7 @@ import 'screens/sign_up.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp;
+  await Firebase.initializeApp();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     //home is "screens/home_page.dart"

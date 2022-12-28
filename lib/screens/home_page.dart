@@ -130,7 +130,10 @@ emailController.text="";
                               case 'wrong-password': returnAlertDialogOnError(
                                 "Incorrect Email Or Password");
                                 break;
-                                case 'unknown': returnAlertDialogOnError("Please Fill Out the ffields correctly");
+                                case 'unknown': returnAlertDialogOnError("Please Fill Out the ffields correctly"); break;
+                                case 'user-not-found': returnAlertDialogOnError(
+                                "Incorrect Email Or Password");
+                                break;
                             }
                           }
                         }

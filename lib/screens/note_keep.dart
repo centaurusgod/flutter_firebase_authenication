@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -38,25 +39,41 @@ class NoteKeep extends StatelessWidget {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.only(left:50.0, right:50.0),
+        padding: EdgeInsets.only(left: 50.0, right: 50.0),
         child: Column(
           children: [
             Text("Hello $userID"),
-              TextField(
-                    style: TextStyle(color: Colors.white),
-                    controller: noteController,
-                    cursorColor: Colors.white,
-                    textDirection: TextDirection.ltr,
-                    decoration: InputDecoration(
-                      hintText: "Memo",
-                      hintStyle:
-                          TextStyle(color: Color.fromARGB(255, 176, 176, 176)),
-                    ),
-                  ),
-                  ElevatedButton(onPressed: (() {
+            TextField(
+              style: TextStyle(color: Color.fromARGB(255, 55, 0, 82)),
+              controller: noteController,
+              cursorColor: Color.fromARGB(255, 0, 0, 0),
+              textDirection: TextDirection.ltr,
+              decoration: InputDecoration(
+                hintText: "Memo",
+                hintStyle: TextStyle(color: Color.fromARGB(255, 176, 176, 176)),
+              ),
+            ),
+            ElevatedButton(
+                onPressed: (() async {
+                  try {
+                    await FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(userID).collection("notes").add({
+                          'Remainder':noteController.text,
+                          'Created Date':DateTime.now(),
+                        }).then((value) => {
+                          noteController.text="",
+                        });
 
-                    
-                  }), child: Icon(Icons.add))
+                    // await FirebaseFirestore.instance.collection("notes").add({
+                    //   "content": noteController.text.trim(),
+                    //   "timestamp": DateTime.now(),
+                    // });
+                  } on FirebaseAuthException catch (error) {
+                    print(error);
+                  }
+                }),
+                child: Icon(Icons.add))
           ],
         ),
       ),

@@ -11,7 +11,7 @@ void main() async{
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     //home is "screens/home_page.dart"
-    home: HomePage(),
+    home: MyApp(),
     routes: {
       '/sign_up_screen': (context)=>SignUpPage(),
     },
@@ -31,13 +31,16 @@ class _MyAppState extends State<MyApp>{
   void initState(){
     super.initState();
     user = FirebaseAuth.instance.currentUser;
+
   }
 
   @override 
   Widget build(BuildContext context){
     if(user!=null){
-      return NoteKeep();
+      print(user);
+      return NoteKeep.setUserID(user!.uid);
     }
+    print(user);
     return HomePage();
   }
 }

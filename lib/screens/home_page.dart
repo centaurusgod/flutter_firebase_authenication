@@ -1,10 +1,8 @@
 import 'dart:developer';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'note_keep.dart';
+import 'package:get/get.dart';
+import 'note_list.dart';
 import 'sign_up.dart';
 
 class HomePage extends StatefulWidget {
@@ -110,12 +108,12 @@ emailController.text="";
                                       email: email, password: password))
                               .user;
                           if (firebaseUser != null) {
-                            Navigator.of(context)
-                                .popUntil((route) => route.isFirst);
+                            // Navigator.of(context)
+                            //     .popUntil((route) => route.isFirst);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => NoteKeep.setUserID(
+                                  builder: (context) => NoteList(
                                       firebaseUser.uid.toString())),
                             );
                           } else {

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/modules/full_firebase_module.dart';
 
 import '../styles/gradient_text.dart';
 import 'home_page.dart';
@@ -13,7 +14,6 @@ class NoteList extends StatefulWidget {
   NoteList(this.userID);
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return NoteListState.setUserID(userID);
   }
 }
@@ -26,6 +26,7 @@ class NoteListState extends State<NoteList> {
 
   //TextEditingController noteController = TextEditingController();
   List<String> notes = List.empty(growable: true);
+  //List<String> docId = List.empty(growable: true);
   Stream<QuerySnapshot>? snapshotStream;
  // Stream<QuerySnapshot>? stream;
   @override
@@ -44,22 +45,9 @@ class NoteListState extends State<NoteList> {
         title: newGradientText("Keep Your Notes"),
         actions: [
           ElevatedButton(
-              onPressed: (() async {
-                try {
-                  await FirebaseAuth.instance.signOut().then((value) => {
-                        returnAlertDialogOnError(
-                            context, "signed Out Sucessfully"),
-                        Navigator.of(context)
-                            .popUntil((route) => route.isFirst),
-                       // Navigator.of(context).pop(),
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                        ),
-                      });
-                } on FirebaseAuthException catch (error) {
-                  returnAlertDialogOnError(context, "$error");
-                }
+              onPressed: ((){
+              FirebaseManager signOutObject = FirebaseManager(context);
+              signOutObject.signOutHandler();
               }),
               child: Text("Sign Out")),
         ],
@@ -99,13 +87,19 @@ class NoteListState extends State<NoteList> {
                 Icons.delete,
                 color: Colors.grey,
               ),
-              onTap: () {
-                	//_delete(context, noteList[position]);
+              onTap: () async{
+
+                //DateTime createdOn = docId[index].;
               },
             ),
             onTap: () {
               debugPrint("ListTile Tapped");
-              	//navigateToDetail(this.noteList[position]);
+              	//Navigator.push(context, NoteKeep.passNote("asas"));
+                Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NoteKeep.passNote(notes[index])),
+                            );
             },
           ),
         );
@@ -193,6 +187,7 @@ class NoteListState extends State<NoteList> {
 
   void createListOfNotes(Map<String, dynamic> map) {
    notes.add(map['Note']);
+ //  docId.add(map['Created On']);
    print(notes);
   }
 

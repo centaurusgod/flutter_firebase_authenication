@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/note_list.dart';
 import 'screens/home_page.dart';
-import 'screens/sign_up.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();

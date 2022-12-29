@@ -7,9 +7,14 @@ import 'package:flutter_firebase_auth/screens/note_list.dart';
 import 'package:flutter_firebase_auth/styles/gradient_text.dart';
 
 class NoteKeep extends StatelessWidget {
+  String note="";
+  NoteKeep.passNote(this.note);
+  NoteKeep();
   TextEditingController noteController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    noteController.text= note;
+    print(note);
     return Scaffold(
         appBar: AppBar(title: newGradientText("Add Notes")),
         body: Padding(

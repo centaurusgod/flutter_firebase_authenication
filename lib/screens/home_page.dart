@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'note_list.dart';
-import 'sign_up.dart';
+import 'sign_up_page.dart';
 
 class HomePage extends StatefulWidget {
   String email="";

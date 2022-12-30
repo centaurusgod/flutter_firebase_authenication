@@ -6,8 +6,6 @@ import 'package:flutter_firebase_auth/modules/user_object.dart';
 import 'package:flutter_firebase_auth/screens/home_page.dart';
 
 import '../modules/full_firebase_module.dart';
-import '../services/signup_services.dart';
-
 class SignUpPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -20,7 +18,7 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
-  SignUpServices? newSignUpHandler;
+
 
   bool hidePassword = true;
   Icon passwordVisibility = Icon(Icons.visibility);
@@ -129,7 +127,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     // testCaseSignUp();
                     if (_validatePassword()) {
                       UserObject mainUserObject = UserObject.signUp(
-                          emailController.text.trim(), passwordController.text);
+                          emailController.text, passwordController.text);
                       FirebaseManager newInstance =
                           FirebaseManager.getUserObjectData(
                               context, mainUserObject);
@@ -142,6 +140,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     setState(() {});
                   }),
                   icon: Icon(Icons.lock),
+
                   label: Text("Sign Up"),
                 ),
               ],

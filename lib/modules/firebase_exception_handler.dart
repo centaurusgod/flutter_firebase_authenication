@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/styles/alert_dialog.dart';
 
@@ -8,6 +10,7 @@ class FirebaseExceptionHandler {
   // FirebaseExceptionHandler.setError(this.errorDialog);
 
   alertDialogshowerOnFirebaseException(String errorCode) {
+    log(errorCode);
     switch (errorCode) {
       case 'wrong-password':
         errorDialog.returnAlertDialogOnError(
@@ -37,6 +40,7 @@ class FirebaseExceptionHandler {
         break;
       case 'weak-password':
         break;
-    }
+      default: errorDialog.returnAlertDialogOnError(context, errorCode); log("Default case ran"); break;
+     }
   }
 }

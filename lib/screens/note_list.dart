@@ -28,11 +28,11 @@ class NoteListState extends State<NoteList> {
   List<String> notes = List.empty(growable: true);
   //List<String> docId = List.empty(growable: true);
   Stream<QuerySnapshot>? snapshotStream;
- // Stream<QuerySnapshot>? stream;
+  // Stream<QuerySnapshot>? stream;
   @override
   void initState() {
     super.initState();
-   // notes = List.empty(growable: true);
+    // notes = List.empty(growable: true);
     getNotes();
   }
 
@@ -40,78 +40,74 @@ class NoteListState extends State<NoteList> {
   Widget build(BuildContext context) {
     //getNotes();
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 24, 0, 41),
-        title: newGradientText("Keep Your Notes"),
-        actions: [
-          ElevatedButton(
-              onPressed: ((){
-              FirebaseManager signOutObject = FirebaseManager(context);
-              signOutObject.signOutHandler();
-              }),
-              child: Text("Sign Out")),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //Navigator.of(context).pop();
-          //getNotes();
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => NoteKeep()),
-          );
-          setState(() {
-           // getNotes();
-          });
-        },
-        backgroundColor: Color.fromARGB(255, 57, 0, 74),
-        child: Icon(Icons.add),
-      ),
-       body:
-       StreamBuilder<QuerySnapshot>(
-        stream: snapshotStream,
-        builder: (context, snapshot){
-          if(snapshot.hasData){
-             //  List<DocumentSnapshot> documents = snapshot.data.documents;
-             log("list working");
-        return ListView.builder(
-          itemCount: notes.length,
-          itemBuilder: (context, index){
- return Card(
-          color: Colors.white,
-          elevation: 2.0,
-          child: ListTile(
-            title: Text(notes[index]),
-            trailing: GestureDetector(
-              child: Icon(
-                Icons.delete,
-                color: Colors.grey,
-              ),
-              onTap: () async{
-
-                //DateTime createdOn = docId[index].;
-              },
-            ),
-            onTap: () {
-              debugPrint("ListTile Tapped");
-              	//Navigator.push(context, NoteKeep.passNote("asas"));
-                Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => NoteKeep.passNote(notes[index])),
-                            );
-            },
-          ),
-        );
-});
-          }
-          else{
-             return Center(child: CircularProgressIndicator());
-          }
-        },
-       )
-    
-    );
+        appBar: AppBar(
+          backgroundColor: Color.fromARGB(255, 24, 0, 41),
+          title: newGradientText(userID),
+          actions: [
+            ElevatedButton(
+                onPressed: (() {
+                  FirebaseManager signOutObject = FirebaseManager(context);
+                   signOutObject.signOutHandler();
+                }),
+                child: Text("Sign Out")),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            //Navigator.of(context).pop();
+            //getNotes();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NoteKeep()),
+            );
+            setState(() {
+              // getNotes();
+            });
+          },
+          backgroundColor: Color.fromARGB(255, 57, 0, 74),
+          child: Icon(Icons.add),
+        ),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: snapshotStream,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              //  List<DocumentSnapshot> documents = snapshot.data.documents;
+              log("list working");
+              return ListView.builder(
+                  itemCount: notes.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      color: Colors.white,
+                      elevation: 2.0,
+                      child: ListTile(
+                        title: Text(notes[index]),
+                        trailing: GestureDetector(
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.grey,
+                          ),
+                          onTap: () async {
+                            //DateTime createdOn = docId[index].;
+                          },
+                        ),
+                        onTap: () {
+                          debugPrint("ListTile Tapped");
+                          //Navigator.push(context, NoteKeep.passNote("asas"));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    NoteKeep.passNote(notes[index])),
+                          );
+                        },
+                      ),
+                    );
+                  });
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ));
     //  body:getNoteListView(),
   }
 
@@ -153,8 +149,8 @@ class NoteListState extends State<NoteList> {
   Future getNotes() async {
     log(userID);
     Map<String, dynamic> dataMap;
-    notes=List.empty(growable: true);
-    
+    notes = List.empty(growable: true);
+
     log("getting notes");
     try {
       snapshotStream = FirebaseFirestore.instance
@@ -163,18 +159,17 @@ class NoteListState extends State<NoteList> {
           .collection("notes")
           .snapshots();
 
-          snapshotStream!.listen(
-            (snapshot){
-            for(var note in snapshot.docs){
-              log("no error");
-              dataMap = note.data() as Map<String, dynamic>;
-              log(dataMap.toString());
-             createListOfNotes(dataMap);
-            }
-          });
+      snapshotStream!.listen((snapshot) {
+        for (var note in snapshot.docs) {
+          log("no error");
+          dataMap = note.data() as Map<String, dynamic>;
+          log(dataMap.toString());
+          createListOfNotes(dataMap);
+        }
+      });
 
       log("after firebase");
-     // log(snapshotStream.toString());
+      // log(snapshotStream.toString());
 
     } catch (error) {
       log("Error occured");
@@ -182,13 +177,12 @@ class NoteListState extends State<NoteList> {
     }
     //print(dataMap);
     log("Function comlete");
-  //  log(notes.toString());
+    //  log(notes.toString());
   }
 
   void createListOfNotes(Map<String, dynamic> map) {
-   notes.add(map['Note']);
- //  docId.add(map['Created On']);
-   print(notes);
+    notes.add(map['Note']);
+    //  docId.add(map['Created On']);
+    print(notes);
   }
-
 }
